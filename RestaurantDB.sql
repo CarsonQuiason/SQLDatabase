@@ -1,61 +1,61 @@
 -- GROUP9 CARSON ROTTINGHAUS, RYAN BELL, YILONG YUAN
 -- TABLE CREATION
 CREATE TABLE RESTURAUNT (
-       resturauntID			INT				NOT NULL  	AUTO_INCREMENT,
+       resturauntID	INT	NOT NULL	AUTO_INCREMENT,
        PRIMARY KEY (resturauntID)
 );
 
 CREATE TABLE INVENTORY (
-       itemID 	        	INT				NOT NULL	AUTO_INCREMENT,
-	   itemName				VARCHAR(15)		NOT NULL,
-	   stock				INT				NOT NULL,
-       PRIMARY KEY (itemID)
+	itemID		INT	NOT NULL	AUTO_INCREMENT,
+	itemName	VARCHAR(15)		NOT NULL,
+	stock		INT			NOT NULL,
+	PRIMARY KEY (itemID)
 );
 
 CREATE TABLE EMPLOYEE (
-       employeeID 	    	INT				NOT NULL	AUTO_INCREMENT,
-	   Fname				VARCHAR(15)		NOT NULL,
-	   Lname				VARCHAR(15)		NOT NULL,
-	   Position				VARCHAR(15)		NOT NULL,
-       PRIMARY KEY (employeeID)
+	employeeID	INT	NOT NULL	AUTO_INCREMENT,
+	Fname		VARCHAR(15)		NOT NULL,
+	Lname		VARCHAR(15)		NOT NULL,
+	Position	VARCHAR(15)		NOT NULL,
+	PRIMARY KEY (employeeID)
 );
 
 CREATE TABLE CUSTOMER (
-       customerID 	     INT		NOT NULL	AUTO_INCREMENT,
+       customerID	INT	NOT NULL	AUTO_INCREMENT,
        PRIMARY KEY (customerID)
 );
 CREATE TABLE REWARDS_MEMBER (
-       customerID 	        INT		NOT NULL,
-	   Fname				VARCHAR(15)		NOT NULL,
-	   Lname				VARCHAR(15)		NOT NULL,
-	   Address				VARCHAR(30)		NOT NULL,
-	   FOREIGN KEY (customerID) REFERENCES CUSTOMER(customerID),
-       PRIMARY KEY (customerID)
+	customerID 	INT	NOT NULL,
+	Fname		VARCHAR(15)		NOT NULL,
+	Lname		VARCHAR(15)		NOT NULL,
+	Address		VARCHAR(30)		NOT NULL,
+	FOREIGN KEY (customerID) REFERENCES CUSTOMER(customerID),
+	PRIMARY KEY (customerID)
 );
 
 CREATE TABLE ORDER_DATA (
-       orderID 	        INT		NOT NULL		AUTO_INCREMENT,
-	   customerID		INT		NOT NULL,
-	   totalCost		FLOAT	NOT NULL,
-	   orderDate		DATE	NOT NULL,
-       PRIMARY KEY (orderID),
-	   FOREIGN KEY (customerID) REFERENCES CUSTOMER(customerID)
+	orderID 	INT	NOT NULL	AUTO_INCREMENT,
+	customerID	INT	NOT NULL,
+	totalCost	FLOAT	NOT NULL,
+	orderDate	DATE	NOT NULL,
+	PRIMARY KEY (orderID),
+	FOREIGN KEY (customerID) REFERENCES CUSTOMER(customerID)
 );
 
 CREATE TABLE ORDER_ITEM (
-	   orderID			INT		NOT NULL		AUTO_INCREMENT,
-	   itemID			INT		NOT NULL,
-	   Price			FLOAT	NOT NULL,
-	   PRIMARY KEY (orderID),
-	   FOREIGN KEY (orderID) REFERENCES ORDER_DATA(orderID),
-	   FOREIGN KEY (itemID) REFERENCES INVENTORY(itemID)
+	orderID			INT		NOT NULL		AUTO_INCREMENT,
+	itemID			INT		NOT NULL,
+	Price			FLOAT		NOT NULL,
+	PRIMARY KEY (orderID),
+	FOREIGN KEY (orderID) REFERENCES ORDER_DATA(orderID),
+	FOREIGN KEY (itemID) REFERENCES INVENTORY(itemID)
 );
 
 CREATE TABLE DAILY_STATS (
-       dailyStatsID		INT		NOT	NULL		AUTO_INCREMENT,
-	   dailyProfit		FLOAT	NOT NULL,
-	   dailyCustomerAmt	INT		NOT	NULL,
-	   PRIMARY KEY (dailyStatsID)
+	dailyStatsID		INT		NOT NULL		AUTO_INCREMENT,
+	dailyProfit		FLOAT		NOT NULL,
+	dailyCustomerAmt	INT		NOT NULL,
+	PRIMARY KEY (dailyStatsID)
 );
 
 -- INSERTION

@@ -1,25 +1,19 @@
 -- GROUP9 CARSON ROTTINGHAUS, RYAN BELL, YILONG YUAN
--- 1. TABLE CREATION
+-- TABLE CREATION
 CREATE TABLE RESTURAUNT (
-       resturauntID			VARCHAR(15)		NOT NULL,
+       resturauntID			INT				NOT NULL  	AUTO_INCREMENT,
        PRIMARY KEY (resturauntID)
 );
 
 CREATE TABLE INVENTORY (
-       itemID 	        	INT				NOT NULL,
+       itemID 	        	INT				NOT NULL	AUTO_INCREMENT,
+	   itemName				VARCHAR(15)		NOT NULL,
 	   stock				INT				NOT NULL,
        PRIMARY KEY (itemID)
 );
 
-CREATE TABLE SUPPLIER (
-       companyName 	        VARCHAR(15)		NOT NULL,
-	   Address				VARCHAR(30)		NOT NULL,
-	   Price				FLOAT			NOT NULL,
-       PRIMARY KEY (companyName)
-);
-
 CREATE TABLE EMPLOYEE (
-       employeeID 	    	INT				NOT NULL,
+       employeeID 	    	INT				NOT NULL	AUTO_INCREMENT,
 	   Fname				VARCHAR(15)		NOT NULL,
 	   Lname				VARCHAR(15)		NOT NULL,
 	   Position				VARCHAR(15)		NOT NULL,
@@ -27,10 +21,10 @@ CREATE TABLE EMPLOYEE (
 );
 
 CREATE TABLE CUSTOMER (
-       customerID 	     INT		NOT NULL,
+       customerID 	     INT		NOT NULL	AUTO_INCREMENT,
        PRIMARY KEY (customerID)
 );
-CREATE TABLE REWADRS_MEMBER (
+CREATE TABLE REWARDS_MEMBER (
        customerID 	        INT		NOT NULL,
 	   Fname				VARCHAR(15)		NOT NULL,
 	   Lname				VARCHAR(15)		NOT NULL,
@@ -40,7 +34,7 @@ CREATE TABLE REWADRS_MEMBER (
 );
 
 CREATE TABLE ORDER_DATA (
-       orderID 	        INT		NOT NULL,
+       orderID 	        INT		NOT NULL		AUTO_INCREMENT,
 	   customerID		INT		NOT NULL,
 	   totalCost		FLOAT	NOT NULL,
 	   orderDate		DATE	NOT NULL,
@@ -49,7 +43,7 @@ CREATE TABLE ORDER_DATA (
 );
 
 CREATE TABLE ORDER_ITEM (
-	   orderID			INT		NOT NULL,
+	   orderID			INT		NOT NULL		AUTO_INCREMENT,
 	   itemID			INT		NOT NULL,
 	   Price			FLOAT	NOT NULL,
 	   PRIMARY KEY (orderID),
@@ -58,8 +52,29 @@ CREATE TABLE ORDER_ITEM (
 );
 
 CREATE TABLE DAILY_STATS (
-       dailyStatsID		INT		NOT	NULL,
+       dailyStatsID		INT		NOT	NULL		AUTO_INCREMENT,
 	   dailyProfit		FLOAT	NOT NULL,
 	   dailyCustomerAmt	INT		NOT	NULL,
 	   PRIMARY KEY (dailyStatsID)
 );
+
+-- INSERTION
+INSERT INTO RESTURAUNT VALUES (); -- EMPTY BC AUTO INCREMENT
+
+INSERT INTO INVENTORY (itemName, stock) VALUES ('Pizza',10);
+INSERT INTO INVENTORY (itemName, stock) VALUES ('Fries',10);
+INSERT INTO INVENTORY (itemName, stock) VALUES ('Sandwich',10);
+INSERT INTO INVENTORY (itemName, stock) VALUES ('Salad',10);
+INSERT INTO INVENTORY (itemName, stock) VALUES ('Chicken',10);
+
+INSERT INTO CUSTOMER VALUES ();
+INSERT INTO REWARDS_MEMBER VALUES (1, 'Carson', 'Rottinghaus','1800 Address Line');
+INSERT INTO CUSTOMER VALUES ();
+INSERT INTO REWARDS_MEMBER VALUES (2, 'John', 'Doe','1600 Address Street');
+
+
+-- MODIFICATION
+
+UPDATE REWARDS_MEMBER 
+SET Fname = 'Jason', Lname = 'Smith'
+WHERE customerID = 1;

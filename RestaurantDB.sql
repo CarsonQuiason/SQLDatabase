@@ -61,32 +61,19 @@ CREATE TABLE DAILY_STATS (
 );
 
 -- INSERTION
-INSERT INTO RESTURAUNT VALUES (); -- EMPTY BC AUTO INCREMENT
+INSERT INTO RESTURAUNT VALUES ();
 
-INSERT INTO INVENTORY (itemName, stock, price) VALUES ('Pizza',10, 8.5);
-INSERT INTO INVENTORY (itemName, stock, price) VALUES ('Fries',10, 3);
-INSERT INTO INVENTORY (itemName, stock, price) VALUES ('Sandwich',10, 6);
-INSERT INTO INVENTORY (itemName, stock, price) VALUES ('Salad',10, 4.4);
-INSERT INTO INVENTORY (itemName, stock, price) VALUES ('Chicken',10, 8);
-
-INSERT INTO EMPLOYEE (Fname, Lname, Position) VALUES ('John','Smith','Manager');
-INSERT INTO EMPLOYEE (Fname, Lname, Position) VALUES ('Jane','Doe','Manager');
-INSERT INTO EMPLOYEE (Fname, Lname, Position) VALUES ('Chris','Smith','Chef');
-INSERT INTO EMPLOYEE (Fname, Lname, Position) VALUES ('Paul','Smith','Cashier');
+INSERT INTO INVENTORY (itemName, stock, price) VALUES ('Pizza',10, 8.5), ('Fries',10, 3), ('Sandwich',10, 6), ('Salad',10, 4.4), ('Chicken',10, 8);
 
 INSERT INTO CUSTOMER VALUES ();
-INSERT INTO REWARDS_MEMBER (customerID, Fname, Lname, Address) VALUES (1, 'Carson', 'Rottinghaus','1800 Address Line');
+INSERT INTO REWARDS_MEMBER (customerID, Fname, Lname, Address) VALUES (1, 'Carson', 'Rottinghaus','1800 Address Lane');
 INSERT INTO CUSTOMER VALUES ();
 INSERT INTO REWARDS_MEMBER (customerID, Fname, Lname, Address) VALUES (2, 'John', 'Doe','1600 Address Street');
-
-
--- DECLARE @tCost AS FLOAT;
 INSERT INTO ORDER_DATA (customerID, totalCost, orderDate) VALUES(1,0,2021-05-07);
-INSERT INTO ORDER_ITEM VALUES(1,1);
-INSERT INTO ORDER_ITEM VALUES(1,2);
-INSERT INTO ORDER_ITEM VALUES(1,3);
--- SELECT @tCost AS SUM()
-
+INSERT INTO ORDER_ITEM VALUES(1,1), (1,2), (1,3);
+SELECT	SUM(i.price) AS itemPrice -- Calculates order total
+FROM	inventory i, order_item s
+WHERE	i.itemID = s.itemID;
 
 -- MODIFICATION
 

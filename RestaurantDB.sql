@@ -61,21 +61,28 @@ CREATE TABLE DAILY_STATS (
 
 -- INSERTION
 INSERT INTO RESTURAUNT VALUES ();
-
-INSERT INTO INVENTORY VALUES ('Pizza',10, 8.5), ('Fries',10, 3), ('Sandwich',10, 6), ('Salad',10, 4.4), ('Chicken',10, 8);
-
+INSERT INTO INVENTORY VALUES ('Pizza',10, 8.5), 
+							('Fries',10, 3), 
+							('Sandwich',10, 6), 
+							('Salad',10, 4.4), 
+							('Chicken',10, 8);
 INSERT INTO CUSTOMER VALUES ();
 INSERT INTO REWARDS_MEMBER (customerID, Fname, Lname, Address) VALUES (1, 'Carson', 'Rottinghaus','1800 Address Lane');
+
 INSERT INTO CUSTOMER VALUES ();
 INSERT INTO REWARDS_MEMBER (customerID, Fname, Lname, Address) VALUES (2, 'John', 'Doe','1600 Address Street');
 INSERT INTO ORDER_DATA (customerID, totalCost, orderDate) VALUES(1,0,2021-05-07);
 INSERT INTO ORDER_ITEM VALUES(1,'Pizza'), (1,'Fries'), (1,'Sandwich');
-SELECT	SUM(i.price) AS itemPrice -- Calculates order total
-FROM	inventory i, order_item s
-WHERE	i.itemName = s.itemName;
+
+
+UPDATE ORDER_DATA
+SET ORDER_DATA.totalCost = (SELECT	SUM(i.price) AS total -- Calculates order total
+							FROM	inventory i, order_item s
+							WHERE	i.itemName = s.itemName
+							)
+WHERE ORDER_DATA.OrderID = 1;
 
 -- MODIFICATION
-
 UPDATE REWARDS_MEMBER 
 SET Fname = 'Jason', Lname = 'Smith'
 WHERE customerID = 1;

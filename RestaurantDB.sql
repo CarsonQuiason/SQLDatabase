@@ -9,6 +9,7 @@ CREATE TABLE INVENTORY (
 	itemID		INT	NOT NULL	AUTO_INCREMENT,
 	itemName	VARCHAR(15)		NOT NULL,
 	stock		INT			NOT NULL,
+	price		FLOAT	NOT NULL,
 	PRIMARY KEY (itemID)
 );
 
@@ -24,18 +25,20 @@ CREATE TABLE CUSTOMER (
        customerID	INT	NOT NULL	AUTO_INCREMENT,
        PRIMARY KEY (customerID)
 );
+
 CREATE TABLE REWARDS_MEMBER (
 	customerID 	INT	NOT NULL,
 	Fname		VARCHAR(15)		NOT NULL,
 	Lname		VARCHAR(15)		NOT NULL,
 	Address		VARCHAR(30)		NOT NULL,
+	rewardsPoints	INT	DEFAULT 0,
 	FOREIGN KEY (customerID) REFERENCES CUSTOMER(customerID),
 	PRIMARY KEY (customerID)
 );
 
 CREATE TABLE ORDER_DATA (
-	orderID 	INT	NOT NULL	AUTO_INCREMENT,
-	customerID	INT	NOT NULL,
+	orderID 	INT		NOT NULL	AUTO_INCREMENT,
+	customerID	INT		NOT NULL,
 	totalCost	FLOAT	NOT NULL,
 	orderDate	DATE	NOT NULL,
 	PRIMARY KEY (orderID),
@@ -43,17 +46,16 @@ CREATE TABLE ORDER_DATA (
 );
 
 CREATE TABLE ORDER_ITEM (
-	orderID			INT		NOT NULL		AUTO_INCREMENT,
-	itemID			INT		NOT NULL,
-	Price			FLOAT		NOT NULL,
-	PRIMARY KEY (orderID),
+	orderID		INT		NOT NULL,
+	itemID		INT		NOT NULL,
+	PRIMARY KEY (itemID),
 	FOREIGN KEY (orderID) REFERENCES ORDER_DATA(orderID),
 	FOREIGN KEY (itemID) REFERENCES INVENTORY(itemID)
 );
 
 CREATE TABLE DAILY_STATS (
 	dailyStatsID		INT		NOT NULL		AUTO_INCREMENT,
-	dailyProfit		FLOAT		NOT NULL,
+	dailyProfit			FLOAT	NOT NULL,
 	dailyCustomerAmt	INT		NOT NULL,
 	PRIMARY KEY (dailyStatsID)
 );
@@ -61,16 +63,29 @@ CREATE TABLE DAILY_STATS (
 -- INSERTION
 INSERT INTO RESTURAUNT VALUES (); -- EMPTY BC AUTO INCREMENT
 
-INSERT INTO INVENTORY (itemName, stock) VALUES ('Pizza',10);
-INSERT INTO INVENTORY (itemName, stock) VALUES ('Fries',10);
-INSERT INTO INVENTORY (itemName, stock) VALUES ('Sandwich',10);
-INSERT INTO INVENTORY (itemName, stock) VALUES ('Salad',10);
-INSERT INTO INVENTORY (itemName, stock) VALUES ('Chicken',10);
+INSERT INTO INVENTORY (itemName, stock, price) VALUES ('Pizza',10, 8.5);
+INSERT INTO INVENTORY (itemName, stock, price) VALUES ('Fries',10, 3);
+INSERT INTO INVENTORY (itemName, stock, price) VALUES ('Sandwich',10, 6);
+INSERT INTO INVENTORY (itemName, stock, price) VALUES ('Salad',10, 4.4);
+INSERT INTO INVENTORY (itemName, stock, price) VALUES ('Chicken',10, 8);
+
+INSERT INTO EMPLOYEE (Fname, Lname, Position) VALUES ('John','Smith','Manager');
+INSERT INTO EMPLOYEE (Fname, Lname, Position) VALUES ('Jane','Doe','Manager');
+INSERT INTO EMPLOYEE (Fname, Lname, Position) VALUES ('Chris','Smith','Chef');
+INSERT INTO EMPLOYEE (Fname, Lname, Position) VALUES ('Paul','Smith','Cashier');
 
 INSERT INTO CUSTOMER VALUES ();
-INSERT INTO REWARDS_MEMBER VALUES (1, 'Carson', 'Rottinghaus','1800 Address Line');
+INSERT INTO REWARDS_MEMBER (customerID, Fname, Lname, Address) VALUES (1, 'Carson', 'Rottinghaus','1800 Address Line');
 INSERT INTO CUSTOMER VALUES ();
-INSERT INTO REWARDS_MEMBER VALUES (2, 'John', 'Doe','1600 Address Street');
+INSERT INTO REWARDS_MEMBER (customerID, Fname, Lname, Address) VALUES (2, 'John', 'Doe','1600 Address Street');
+
+
+-- DECLARE @tCost AS FLOAT;
+INSERT INTO ORDER_DATA (customerID, totalCost, orderDate) VALUES(1,0,2021-05-07);
+INSERT INTO ORDER_ITEM VALUES(1,1);
+INSERT INTO ORDER_ITEM VALUES(1,2);
+INSERT INTO ORDER_ITEM VALUES(1,3);
+-- SELECT @tCost AS SUM()
 
 
 -- MODIFICATION

@@ -6,11 +6,10 @@ CREATE TABLE RESTURAUNT (
 );
 
 CREATE TABLE INVENTORY (
-	itemID		INT	NOT NULL	AUTO_INCREMENT,
 	itemName	VARCHAR(15)		NOT NULL,
 	stock		INT			NOT NULL,
 	price		FLOAT	NOT NULL,
-	PRIMARY KEY (itemID)
+	PRIMARY KEY (itemName)
 );
 
 CREATE TABLE EMPLOYEE (
@@ -47,10 +46,10 @@ CREATE TABLE ORDER_DATA (
 
 CREATE TABLE ORDER_ITEM (
 	orderID		INT		NOT NULL,
-	itemID		INT		NOT NULL,
+	itemName	VARCHAR(15)		NOT NULL,
 	FOREIGN KEY (orderID) REFERENCES ORDER_DATA(orderID),
-	FOREIGN KEY (itemID) REFERENCES INVENTORY(itemID),
-	CONSTRAINT orderItem PRIMARY KEY (orderID, itemID)
+	FOREIGN KEY (itemName) REFERENCES INVENTORY(itemName),
+	CONSTRAINT orderItem PRIMARY KEY (orderID, itemName)
 );
 
 CREATE TABLE DAILY_STATS (
@@ -63,17 +62,17 @@ CREATE TABLE DAILY_STATS (
 -- INSERTION
 INSERT INTO RESTURAUNT VALUES ();
 
-INSERT INTO INVENTORY (itemName, stock, price) VALUES ('Pizza',10, 8.5), ('Fries',10, 3), ('Sandwich',10, 6), ('Salad',10, 4.4), ('Chicken',10, 8);
+INSERT INTO INVENTORY VALUES ('Pizza',10, 8.5), ('Fries',10, 3), ('Sandwich',10, 6), ('Salad',10, 4.4), ('Chicken',10, 8);
 
 INSERT INTO CUSTOMER VALUES ();
 INSERT INTO REWARDS_MEMBER (customerID, Fname, Lname, Address) VALUES (1, 'Carson', 'Rottinghaus','1800 Address Lane');
 INSERT INTO CUSTOMER VALUES ();
 INSERT INTO REWARDS_MEMBER (customerID, Fname, Lname, Address) VALUES (2, 'John', 'Doe','1600 Address Street');
 INSERT INTO ORDER_DATA (customerID, totalCost, orderDate) VALUES(1,0,2021-05-07);
-INSERT INTO ORDER_ITEM VALUES(1,1), (1,2), (1,3);
+INSERT INTO ORDER_ITEM VALUES(1,'Pizza'), (1,'Fries'), (1,'Sandwich');
 SELECT	SUM(i.price) AS itemPrice -- Calculates order total
 FROM	inventory i, order_item s
-WHERE	i.itemID = s.itemID;
+WHERE	i.itemName = s.itemName;
 
 -- MODIFICATION
 

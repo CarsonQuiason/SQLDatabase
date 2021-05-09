@@ -7,7 +7,6 @@ CREATE TABLE RESTURAUNT (
 
 CREATE TABLE INVENTORY (
 	itemName	VARCHAR(15)		NOT NULL,
-	stock		INT			NOT NULL,
 	price		FLOAT	NOT NULL,
 	PRIMARY KEY (itemName)
 );
@@ -62,40 +61,52 @@ CREATE TABLE ORDER_ITEM (
 
 -- INSERTION
 INSERT INTO RESTURAUNT VALUES ();
-INSERT INTO DAILY_STATS (orderDate) VALUES (2021-05-07);
-INSERT INTO INVENTORY VALUES ('Pizza',10, 8.5), 
-							('Fries',10, 3), 
-							('Sandwich',10, 6), 
-							('Salad',10, 4.4), 
-							('Chicken',10, 8);
+INSERT INTO DAILY_STATS (orderDate) VALUES ('2021-05-07');
+INSERT INTO INVENTORY VALUES ('Pizza', 8.5), 
+							('Fries', 3), 
+							('Sandwich', 6), 
+							('Salad', 4.4), 
+							('Chicken', 8);
+
 INSERT INTO CUSTOMER VALUES ();
 INSERT INTO REWARDS_MEMBER (customerID, Fname, Lname, Address) VALUES (1, 'Carson', 'Rottinghaus','1800 Address Lane');
 INSERT INTO CUSTOMER VALUES ();
 INSERT INTO REWARDS_MEMBER (customerID, Fname, Lname, Address) VALUES (2, 'John', 'Doe','1600 Address Street');
 
-INSERT INTO ORDER_DATA (customerID, totalCost, orderDate) VALUES(1,0,2021-05-07);
+-- Order Ticket 1
+INSERT INTO ORDER_DATA (customerID, totalCost, orderDate) VALUES(1,0,'2021-05-07');
 INSERT INTO ORDER_ITEM VALUES(1,'Pizza'), (1,'Fries'), (1,'Sandwich');
 
-INSERT INTO ORDER_DATA (customerID, totalCost, orderDate) VALUES(1,0,2021-05-07);
-INSERT INTO ORDER_ITEM VALUES(2,'Chicken'), (2,'Fries'), (2,'Sandwich');
-
-UPDATE ORDER_DATA -- QUERY UPDATES ORDER_DATA.totalCost attribute
-SET ORDER_DATA.totalCost = (SELECT	SUM(i.price) AS total -- Calculates order total
+UPDATE ORDER_DATA -- QUERY UPDATES ORDER_DATA.totalCost attribute given specific orderID
+SET ORDER_DATA.totalCost = (SELECT	SUM(i.price)
 							FROM	inventory i, order_item s
 							WHERE	i.itemName = s.itemName and s.orderID = 1
 							)
 WHERE ORDER_DATA.OrderID = 1;
 
-UPDATE ORDER_DATA -- QUERY UPDATES ORDER_DATA.totalCost attribute
-SET ORDER_DATA.totalCost = (SELECT	SUM(i.price) AS total -- Calculates order total
+UPDATE REWARDS_MEMBER m, ORDER_DATA d -- QUERY UPDATES REWARDS_MEMBER.rewardsPoints based on their order total * 10 
+SET m.rewardsPoints = d.totalCost * 10
+WHERE m.customerID = 1 and d.customerID = 1;
+
+-- Order Ticket 2
+INSERT INTO ORDER_DATA (customerID, totalCost, orderDate) VALUES(1,0,'2021-05-07');
+INSERT INTO ORDER_ITEM VALUES(2,'Chicken'), (2,'Fries'), (2,'Sandwich');
+
+UPDATE ORDER_DATA -- QUERY UPDATES ORDER_DATA.totalCost attribute given specific orderID
+SET ORDER_DATA.totalCost = (SELECT	SUM(i.price)
 							FROM	inventory i, order_item s
 							WHERE	i.itemName = s.itemName and s.orderID = 2
 							)
 WHERE ORDER_DATA.OrderID = 2;
 
-UPDATE DAILY_STATS -- QUERY UPDATES DAILY_STATS.dailyIncome attribute
+UPDATE REWARDS_MEMBER m, ORDER_DATA d -- QUERY UPDATES REWARDS_MEMBER.rewardsPoints based on their order total * 10 
+SET m.rewardsPoints = d.totalCost * 10
+WHERE m.customerID = 2 and d.customerID = 2;
+
+UPDATE DAILY_STATS -- QUERY UPDATES DAILY_STATS.dailyIncome attribute given specifc orderDate
 SET DAILY_STATS.dailyIncome = (SELECT	SUM(d.totalCost)
 							FROM	order_data d 
+							WHERE d.orderDate = '2021-05-07'
 							);
 
 -- MODIFICATION

@@ -35,13 +35,21 @@ CREATE TABLE REWARDS_MEMBER (
 	PRIMARY KEY (customerID)
 );
 
+CREATE TABLE DAILY_STATS (
+	orderDate		DATE	NOT NULL,
+	dailyIncome			FLOAT	DEFAULT	0.0,
+	dailyCustomerAmt	INT		DEFAULT 0,
+	PRIMARY KEY (orderDate)
+);
+
 CREATE TABLE ORDER_DATA (
 	orderID 	INT		NOT NULL	AUTO_INCREMENT,
 	customerID	INT		NOT NULL,
 	totalCost	FLOAT	NOT NULL,
 	orderDate	DATE	NOT NULL,
 	PRIMARY KEY (orderID),
-	FOREIGN KEY (customerID) REFERENCES CUSTOMER(customerID)
+	FOREIGN KEY (customerID) REFERENCES CUSTOMER(customerID),
+	FOREIGN KEY (orderDate)  REFERENCES DAILY_STATS(orderDate)
 );
 
 CREATE TABLE ORDER_ITEM (
@@ -52,15 +60,9 @@ CREATE TABLE ORDER_ITEM (
 	CONSTRAINT orderItem PRIMARY KEY (orderID, itemName)
 );
 
-CREATE TABLE DAILY_STATS (
-	dailyStatsID		INT		NOT NULL		AUTO_INCREMENT,
-	dailyProfit			FLOAT	NOT NULL,
-	dailyCustomerAmt	INT		NOT NULL,
-	PRIMARY KEY (dailyStatsID)
-);
-
 -- INSERTION
 INSERT INTO RESTURAUNT VALUES ();
+INSERT INTO DAILY_STATS (orderDate) VALUES (2021-05-07);
 INSERT INTO INVENTORY VALUES ('Pizza',10, 8.5), 
 							('Fries',10, 3), 
 							('Sandwich',10, 6), 
@@ -68,19 +70,33 @@ INSERT INTO INVENTORY VALUES ('Pizza',10, 8.5),
 							('Chicken',10, 8);
 INSERT INTO CUSTOMER VALUES ();
 INSERT INTO REWARDS_MEMBER (customerID, Fname, Lname, Address) VALUES (1, 'Carson', 'Rottinghaus','1800 Address Lane');
-
 INSERT INTO CUSTOMER VALUES ();
 INSERT INTO REWARDS_MEMBER (customerID, Fname, Lname, Address) VALUES (2, 'John', 'Doe','1600 Address Street');
+
 INSERT INTO ORDER_DATA (customerID, totalCost, orderDate) VALUES(1,0,2021-05-07);
 INSERT INTO ORDER_ITEM VALUES(1,'Pizza'), (1,'Fries'), (1,'Sandwich');
 
+INSERT INTO ORDER_DATA (customerID, totalCost, orderDate) VALUES(1,0,2021-05-07);
+INSERT INTO ORDER_ITEM VALUES(2,'Chicken'), (2,'Fries'), (2,'Sandwich');
 
-UPDATE ORDER_DATA
+UPDATE ORDER_DATA -- QUERY UPDATES ORDER_DATA.totalCost attribute
 SET ORDER_DATA.totalCost = (SELECT	SUM(i.price) AS total -- Calculates order total
 							FROM	inventory i, order_item s
-							WHERE	i.itemName = s.itemName
+							WHERE	i.itemName = s.itemName and s.orderID = 1
 							)
 WHERE ORDER_DATA.OrderID = 1;
+
+UPDATE ORDER_DATA -- QUERY UPDATES ORDER_DATA.totalCost attribute
+SET ORDER_DATA.totalCost = (SELECT	SUM(i.price) AS total -- Calculates order total
+							FROM	inventory i, order_item s
+							WHERE	i.itemName = s.itemName and s.orderID = 2
+							)
+WHERE ORDER_DATA.OrderID = 2;
+
+UPDATE DAILY_STATS -- QUERY UPDATES DAILY_STATS.dailyIncome attribute
+SET DAILY_STATS.dailyIncome = (SELECT	SUM(d.totalCost)
+							FROM	order_data d 
+							);
 
 -- MODIFICATION
 UPDATE REWARDS_MEMBER 

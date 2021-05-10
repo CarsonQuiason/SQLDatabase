@@ -108,10 +108,10 @@ DELIMITER ;
 INSERT INTO RESTURAUNT VALUES ();
 INSERT INTO DAILY_STATS (orderDate) VALUES ('2021-05-07');
 INSERT INTO INVENTORY VALUES ('Pizza', 8.5), 
-							('Fries', 3), 
-							('Sandwich', 6), 
-							('Salad', 4.4), 
-							('Chicken', 8);
+				('Fries', 3), 
+				('Sandwich', 6), 
+				('Salad', 4.4), 
+				('Chicken', 8);
 							
 INSERT INTO CUSTOMER VALUES ();
 INSERT INTO REWARDS_MEMBER (customerID, Fname, Lname, Address) VALUES (1, 'Carson', 'Rottinghaus','1800 Address Lane');

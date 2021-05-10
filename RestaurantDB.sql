@@ -7,7 +7,7 @@ CREATE TABLE RESTURAUNT (
 
 CREATE TABLE INVENTORY (
 	itemName	VARCHAR(15)		NOT NULL,
-	price		FLOAT	NOT NULL,
+	price		FLOAT			NOT NULL,
 	PRIMARY KEY (itemName)
 );
 
@@ -35,15 +35,15 @@ CREATE TABLE REWARDS_MEMBER (
 );
 
 CREATE TABLE DAILY_STATS (
-	orderDate		DATE	NOT NULL,
+	orderDate	DATE	NOT NULL,
 	dailyIncome			FLOAT	DEFAULT	0.0,
 	dailyOrderAmt	INT		DEFAULT 0,
 	PRIMARY KEY (orderDate)
 );
 
 CREATE TABLE ORDER_DATA (
-	orderID 	INT		NOT NULL	AUTO_INCREMENT,
-	customerID	INT		NOT NULL,
+	orderID 	INT	NOT NULL	AUTO_INCREMENT,
+	customerID	INT	NOT NULL,
 	totalCost	FLOAT	NOT NULL,
 	orderDate	DATE	NOT NULL,
 	PRIMARY KEY (orderID),
@@ -52,8 +52,8 @@ CREATE TABLE ORDER_DATA (
 );
 
 CREATE TABLE ORDER_ITEM (
-	orderID		INT		NOT NULL,
-	itemName	VARCHAR(15)		NOT NULL,
+	orderID		INT	NOT NULL,
+	itemName	VARCHAR(15)	NOT NULL,
 	FOREIGN KEY (orderID) REFERENCES ORDER_DATA(orderID),
 	FOREIGN KEY (itemName) REFERENCES INVENTORY(itemName),
 	CONSTRAINT orderItem PRIMARY KEY (orderID, itemName)
@@ -65,9 +65,9 @@ CREATE DEFINER=root@localhost PROCEDURE calculateOrderTotal (IN orderID INT)
 BEGIN
 UPDATE ORDER_DATA 
 SET ORDER_DATA.totalCost = (SELECT	SUM(i.price)
-							FROM	inventory i,order_item s
-							WHERE	i.itemName = s.itemName and s.orderID = orderID
-							)
+				FROM	inventory i,order_item s
+				WHERE	i.itemName = s.itemName and s.orderID = orderID
+				)
 WHERE ORDER_DATA.orderID = orderID;
 END//
 DELIMITER ;
@@ -86,9 +86,9 @@ CREATE DEFINER=root@localhost PROCEDURE calculateDailyIncome(IN orderDate DATE)
 BEGIN
 UPDATE DAILY_STATS
 SET DAILY_STATS.dailyIncome = (SELECT	SUM(d.totalCost)
-							FROM	order_data d 
-							WHERE d.orderDate = orderDate
-							);
+				FROM	order_data d 
+				WHERE d.orderDate = orderDate
+				);
 END//
 DELIMITER ;
 
@@ -97,9 +97,9 @@ CREATE DEFINER=root@localhost PROCEDURE calculateDailyOrderAmt(IN orderDate DATE
 BEGIN
 UPDATE DAILY_STATS s
 SET s.dailyOrderAmt = (SELECT COUNT(*)
-					  FROM ORDER_DATA d
-					  WHERE d.orderDate = orderDate
-						)
+			FROM ORDER_DATA d
+			WHERE d.orderDate = orderDate
+			)
 WHERE s.orderDate = orderDate;
 END//
 DELIMITER ;

@@ -55,8 +55,7 @@ CREATE TABLE ORDER_ITEM (
 	orderID		INT	NOT NULL,
 	itemName	VARCHAR(15)	NOT NULL,
 	FOREIGN KEY (orderID) REFERENCES ORDER_DATA(orderID),
-	FOREIGN KEY (itemName) REFERENCES INVENTORY(itemName),
-	CONSTRAINT orderItem PRIMARY KEY (orderID, itemName)
+	FOREIGN KEY (itemName) REFERENCES INVENTORY(itemName)
 );
 
 -- PROCEDURES
@@ -68,15 +67,15 @@ SET ORDER_DATA.totalCost = (SELECT	SUM(i.price)
 				FROM	inventory i,order_item s
 				WHERE	i.itemName = s.itemName and s.orderID = orderID
 				)
-WHERE ORDER_DATA.orderID = orderID;
+WHERE ORDER_DATA.orderID = orderID and ORDER_DATA.orderDate = orderDate;
 END//
 DELIMITER ;
 
-DELIMITER // -- UPDATES REWARDS_MEMBER.rewardsPoints based on their order total * 10 
+DELIMITER // -- UPDATES REWARDS_MEMBER.rewardsPoints based on their current rewards points + order total * 10 
 CREATE DEFINER=root@localhost PROCEDURE addRewardsPoints(IN customerID INT)
 BEGIN
 UPDATE REWARDS_MEMBER m, ORDER_DATA d
-SET m.rewardsPoints = d.totalCost * 10
+SET m.rewardsPoints = m.rewardsPoints + (d.totalCost * 10)
 WHERE m.customerID = customerID and d.customerID = customerID;
 END//
 DELIMITER ;
@@ -84,11 +83,12 @@ DELIMITER ;
 DELIMITER // -- UPDATES DAILY_STATS.dailyIncome attribute given specifc orderDate
 CREATE DEFINER=root@localhost PROCEDURE calculateDailyIncome(IN orderDate DATE)
 BEGIN
-UPDATE DAILY_STATS
-SET DAILY_STATS.dailyIncome = (SELECT	SUM(d.totalCost)
+UPDATE DAILY_STATS s
+SET s.dailyIncome = (SELECT	SUM(d.totalCost)
 				FROM	order_data d 
 				WHERE d.orderDate = orderDate
-				);
+				)
+WHERE s.orderDate = orderDate;
 END//
 DELIMITER ;
 
@@ -107,6 +107,11 @@ DELIMITER ;
 -- INSERTION
 INSERT INTO RESTURAUNT VALUES ();
 INSERT INTO DAILY_STATS (orderDate) VALUES ('2021-05-07');
+INSERT INTO DAILY_STATS (orderDate) VALUES ('2021-05-08');
+INSERT INTO EMPLOYEE (Fname, Lname, Position) VALUES ('Joel','Embiid','Cashier');
+INSERT INTO EMPLOYEE (Fname, Lname, Position) VALUES ('Bob','Ross','Manager');
+INSERT INTO EMPLOYEE (Fname, Lname, Position) VALUES ('Jayson','Tatum','Manager');
+INSERT INTO EMPLOYEE (Fname, Lname, Position) VALUES ('Steph','Curry','Chef');
 INSERT INTO INVENTORY VALUES ('Pizza', 8.5), 
 				('Fries', 3), 
 				('Sandwich', 6), 
@@ -117,6 +122,7 @@ INSERT INTO CUSTOMER VALUES ();
 INSERT INTO REWARDS_MEMBER (customerID, Fname, Lname, Address) VALUES (1, 'Carson', 'Rottinghaus','1800 Address Lane');
 INSERT INTO CUSTOMER VALUES ();
 INSERT INTO REWARDS_MEMBER (customerID, Fname, Lname, Address) VALUES (2, 'John', 'Doe','1600 Address Street');
+INSERT INTO CUSTOMER VALUES ();
 
 -- EXAMPLE USAGE
 -- Order Ticket 1
@@ -131,10 +137,17 @@ INSERT INTO ORDER_ITEM VALUES(2,'Chicken'), (2,'Fries'), (2,'Sandwich');
 CALL calculateOrderTotal(2);
 CALL addRewardsPoints(2);
 
+-- Order Ticket 3
+INSERT INTO ORDER_DATA (customerID, totalCost, orderDate) VALUES(2,0,'2021-05-08');
+INSERT INTO ORDER_ITEM VALUES(3,'Chicken'), (3,'Fries'), (3,'Sandwich'), (3,'Salad');
+CALL calculateOrderTotal(3);
+CALL addRewardsPoints(2);
 
 -- DAILY_STATS UPDATE QUERIES
 CALL calculateDailyIncome('2021-05-07');
 CALL calculateDailyOrderAmt('2021-05-07');
+CALL calculateDailyIncome('2021-05-08');
+CALL calculateDailyOrderAmt('2021-05-08');
 
 
 -- MODIFICATION

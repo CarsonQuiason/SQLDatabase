@@ -59,7 +59,8 @@ CREATE TABLE ORDER_ITEM (
 );
 
 -- PROCEDURES
-DELIMITER // -- UPDATES ORDER_DATA.totalCost attribute given specific orderID
+-- UPDATES ORDER_DATA.totalCost attribute given specific orderID
+DELIMITER // 
 CREATE DEFINER=root@localhost PROCEDURE calculateOrderTotal (IN orderID INT)
 BEGIN
 UPDATE ORDER_DATA 
@@ -71,7 +72,8 @@ WHERE ORDER_DATA.orderID = orderID and ORDER_DATA.orderDate = orderDate;
 END//
 DELIMITER ;
 
-DELIMITER // -- UPDATES REWARDS_MEMBER.rewardsPoints based on their current rewards points + order total * 10 
+-- UPDATES REWARDS_MEMBER.rewardsPoints based on their current rewards points + order total * 10
+DELIMITER //  
 CREATE DEFINER=root@localhost PROCEDURE addRewardsPoints(IN customerID INT)
 BEGIN
 UPDATE REWARDS_MEMBER m, ORDER_DATA d
@@ -80,7 +82,8 @@ WHERE m.customerID = customerID and d.customerID = customerID;
 END//
 DELIMITER ;
 
-DELIMITER // -- UPDATES DAILY_STATS.dailyIncome attribute given specifc orderDate
+-- UPDATES DAILY_STATS.dailyIncome attribute given specifc orderDate
+DELIMITER // 
 CREATE DEFINER=root@localhost PROCEDURE calculateDailyIncome(IN orderDate DATE)
 BEGIN
 UPDATE DAILY_STATS s
@@ -92,7 +95,8 @@ WHERE s.orderDate = orderDate;
 END//
 DELIMITER ;
 
-DELIMITER // -- UPDATES DAILY_STATS.dailyOrderAmt attribute given a specific orderDate
+-- UPDATES DAILY_STATS.dailyOrderAmt attribute given a specific orderDate
+DELIMITER // 
 CREATE DEFINER=root@localhost PROCEDURE calculateDailyOrderAmt(IN orderDate DATE)
 BEGIN
 UPDATE DAILY_STATS s
@@ -104,6 +108,26 @@ WHERE s.orderDate = orderDate;
 END//
 DELIMITER ;
 
+-- Returns INVENTORY.itemPrice
+DELIMITER //
+CREATE DEFINER=root@localhost PROCEDURE getItemPrice(IN inputName VARCHAR(15))
+BEGIN
+SELECT price
+FROM INVENTORY
+WHERE itemName = inputName;
+END//
+DELIMITER ;
+
+-- Returns REWARDS_MEMBER rewards points
+DELIMITER //
+CREATE DEFINER=root@localhost PROCEDURE getRewardsPoints(IN inputID INT)
+BEGIN
+SELECT rewardsPoints 
+FROM REWARDS_MEMBER
+WHERE customerID = inputID;
+END //
+DELIMITER ;
+
 -- INSERTION
 INSERT INTO RESTURAUNT VALUES ();
 INSERT INTO DAILY_STATS (orderDate) VALUES ('2021-05-07');
@@ -113,10 +137,10 @@ INSERT INTO EMPLOYEE (Fname, Lname, Position) VALUES ('Bob','Ross','Manager');
 INSERT INTO EMPLOYEE (Fname, Lname, Position) VALUES ('Jayson','Tatum','Manager');
 INSERT INTO EMPLOYEE (Fname, Lname, Position) VALUES ('Steph','Curry','Chef');
 INSERT INTO INVENTORY VALUES ('Pizza', 8.5), 
-				('Fries', 3), 
-				('Sandwich', 6), 
-				('Salad', 4.4), 
-				('Chicken', 8);
+								('Fries', 3), 
+								('Sandwich', 6), 
+								('Salad', 4.4), 
+								('Chicken', 8);
 							
 INSERT INTO CUSTOMER VALUES ();
 INSERT INTO REWARDS_MEMBER (customerID, Fname, Lname, Address) VALUES (1, 'Carson', 'Rottinghaus','1800 Address Lane');
@@ -133,7 +157,7 @@ CALL addRewardsPoints(1);
 
 -- Order Ticket 2
 INSERT INTO ORDER_DATA (customerID, totalCost, orderDate) VALUES(2,0,'2021-05-07');
-INSERT INTO ORDER_ITEM VALUES(2,'Chicken'), (2,'Fries'), (2,'Sandwich');
+INSERT INTO ORDER_ITEM VALUES(2,'Chicken'), (2,'Fries'), (2,'Sandwich'), (2,'Chicken');
 CALL calculateOrderTotal(2);
 CALL addRewardsPoints(2);
 

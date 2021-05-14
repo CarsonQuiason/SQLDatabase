@@ -1,13 +1,13 @@
 -- GROUP9 CARSON ROTTINGHAUS, RYAN BELL, YILONG YUAN
 -- TABLE CREATION
 CREATE TABLE RESTURAUNT (
-       resturauntID	INT	NOT NULL	AUTO_INCREMENT,
-       PRIMARY KEY (resturauntID)
+    resturauntID	INT	NOT NULL	AUTO_INCREMENT,
+    PRIMARY KEY (resturauntID)
 );
 
 CREATE TABLE INVENTORY (
 	itemName	VARCHAR(15)		NOT NULL,
-	price		FLOAT			NOT NULL,
+	itemPrice		FLOAT			NOT NULL,
 	PRIMARY KEY (itemName)
 );
 
@@ -16,7 +16,9 @@ CREATE TABLE EMPLOYEE (
 	Fname		VARCHAR(15)		NOT NULL,
 	Lname		VARCHAR(15)		NOT NULL,
 	Position	VARCHAR(15)		NOT NULL,
-	PRIMARY KEY (employeeID)
+	resturauntID	INT			NOT NULL,
+	PRIMARY KEY (employeeID),
+	FOREIGN KEY (resturauntID) REFERENCES RESTURAUNT(resturauntID)
 );
 
 CREATE TABLE CUSTOMER (
@@ -36,9 +38,11 @@ CREATE TABLE REWARDS_MEMBER (
 
 CREATE TABLE DAILY_STATS (
 	orderDate	DATE	NOT NULL,
+	resturauntID	INT		NOT NULL,
 	dailyIncome			FLOAT	DEFAULT	0.0,
 	dailyOrderAmt	INT		DEFAULT 0,
-	PRIMARY KEY (orderDate)
+	PRIMARY KEY (orderDate),
+	FOREIGN KEY (resturauntID) REFERENCES RESTURAUNT(resturauntID)
 );
 
 CREATE TABLE ORDER_DATA (
@@ -61,10 +65,10 @@ CREATE TABLE ORDER_ITEM (
 -- PROCEDURES
 -- UPDATES ORDER_DATA.totalCost attribute given specific orderID
 DELIMITER // 
-CREATE DEFINER=root@localhost PROCEDURE calculateOrderTotal (IN orderID INT)
+CREATE DEFINER=root@localhost PROCEDURE calculateOrderTotal (IN orderID INT, IN orderDate DATE)
 BEGIN
 UPDATE ORDER_DATA 
-SET ORDER_DATA.totalCost = (SELECT	SUM(i.price)
+SET ORDER_DATA.totalCost = (SELECT	SUM(i.itemPrice)
 				FROM	inventory i,order_item s
 				WHERE	i.itemName = s.itemName and s.orderID = orderID
 				)
@@ -110,9 +114,9 @@ DELIMITER ;
 
 -- Returns INVENTORY.itemPrice
 DELIMITER //
-CREATE DEFINER=root@localhost PROCEDURE getItemPrice(IN inputName VARCHAR(15))
+CREATE DEFINER=root@localhost PROCEDURE getItemitemPrice(IN inputName VARCHAR(15))
 BEGIN
-SELECT price
+SELECT itemPrice
 FROM INVENTORY
 WHERE itemName = inputName;
 END//
@@ -128,19 +132,32 @@ WHERE customerID = inputID;
 END //
 DELIMITER ;
 
+-- Returns the order history given a specific customerID
+DELIMITER // 
+CREATE DEFINER=root@localhost PROCEDURE getOrderHistory(IN inputID INT)
+BEGIN
+SELECT d.customerID, d.orderID, d.totalCost, d.orderDate
+FROM order_data d
+INNER JOIN customer c
+ON d.customerID = c.customerID
+WHERE c.customerID = inputID;
+END //
+DELIMITER ;
+
 -- INSERTION
 INSERT INTO RESTURAUNT VALUES ();
-INSERT INTO DAILY_STATS (orderDate) VALUES ('2021-05-07');
-INSERT INTO DAILY_STATS (orderDate) VALUES ('2021-05-08');
-INSERT INTO EMPLOYEE (Fname, Lname, Position) VALUES ('Joel','Embiid','Cashier');
-INSERT INTO EMPLOYEE (Fname, Lname, Position) VALUES ('Bob','Ross','Manager');
-INSERT INTO EMPLOYEE (Fname, Lname, Position) VALUES ('Jayson','Tatum','Manager');
-INSERT INTO EMPLOYEE (Fname, Lname, Position) VALUES ('Steph','Curry','Chef');
+INSERT INTO DAILY_STATS (orderDate, resturauntID) VALUES ('2021-05-07',1);
+INSERT INTO DAILY_STATS (orderDate, resturauntID) VALUES ('2021-05-08',1);
+INSERT INTO EMPLOYEE (Fname, Lname, Position, resturauntID) VALUES ('Joel','Embiid','Cashier', 1);
+INSERT INTO EMPLOYEE (Fname, Lname, Position, resturauntID) VALUES ('Bob','Ross','Manager', 1);
+INSERT INTO EMPLOYEE (Fname, Lname, Position, resturauntID) VALUES ('Jayson','Tatum','Manager', 1);
+INSERT INTO EMPLOYEE (Fname, Lname, Position, resturauntID) VALUES ('Steph','Curry','Chef', 1);
 INSERT INTO INVENTORY VALUES ('Pizza', 8.5), 
 								('Fries', 3), 
 								('Sandwich', 6), 
 								('Salad', 4.4), 
-								('Chicken', 8);
+								('Chicken', 8),
+								('Potato', 2);
 							
 INSERT INTO CUSTOMER VALUES ();
 INSERT INTO REWARDS_MEMBER (customerID, Fname, Lname, Address) VALUES (1, 'Carson', 'Rottinghaus','1800 Address Lane');
@@ -152,19 +169,19 @@ INSERT INTO CUSTOMER VALUES ();
 -- Order Ticket 1
 INSERT INTO ORDER_DATA (customerID, totalCost, orderDate) VALUES(1,0,'2021-05-07');
 INSERT INTO ORDER_ITEM VALUES(1,'Pizza'), (1,'Fries'), (1,'Sandwich');
-CALL calculateOrderTotal(1);
+CALL calculateOrderTotal(1,'2021-05-07');
 CALL addRewardsPoints(1);
 
 -- Order Ticket 2
 INSERT INTO ORDER_DATA (customerID, totalCost, orderDate) VALUES(2,0,'2021-05-07');
 INSERT INTO ORDER_ITEM VALUES(2,'Chicken'), (2,'Fries'), (2,'Sandwich'), (2,'Chicken');
-CALL calculateOrderTotal(2);
+CALL calculateOrderTotal(2, '2021-05-07');
 CALL addRewardsPoints(2);
 
 -- Order Ticket 3
 INSERT INTO ORDER_DATA (customerID, totalCost, orderDate) VALUES(2,0,'2021-05-08');
 INSERT INTO ORDER_ITEM VALUES(3,'Chicken'), (3,'Fries'), (3,'Sandwich'), (3,'Salad');
-CALL calculateOrderTotal(3);
+CALL calculateOrderTotal(3, '2021-05-07');
 CALL addRewardsPoints(2);
 
 -- DAILY_STATS UPDATE QUERIES
@@ -178,3 +195,15 @@ CALL calculateDailyOrderAmt('2021-05-08');
 UPDATE REWARDS_MEMBER 
 SET Fname = 'Jason', Lname = 'Smith'
 WHERE customerID = 1;
+
+UPDATE EMPLOYEE
+SET Position = 'Manager'
+WHERE employeeID = 1;
+
+UPDATE INVENTORY
+SET itemPrice = 4
+WHERE itemName = 'Potato';
+
+-- DELETION
+
+

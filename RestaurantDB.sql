@@ -113,7 +113,7 @@ DELIMITER ;
 
 -- Returns INVENTORY.itemPrice
 DELIMITER //
-CREATE DEFINER=root@localhost PROCEDURE getItemitemPrice(IN inputName VARCHAR(15))
+CREATE DEFINER=root@localhost PROCEDURE getitemPrice(IN inputName VARCHAR(15))
 BEGIN
 SELECT itemPrice
 FROM INVENTORY
